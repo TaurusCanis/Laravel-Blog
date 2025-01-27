@@ -33,4 +33,31 @@ class BlogTest extends TestCase
 	    $response->assertSee($post->title);
 	}
     }
+
+    public function test_new_post_must_have_title() {
+        $response = $this->post('/posts', [
+		'content' => 'This is the content of the blog post.',
+	]);
+
+	$response->assertSessionHasErrors('title');
+    }
+
+    public function test_new_post_must_have_content() {
+	    $response = $this->post('/posts', [
+		    'title' => 'A Blog Post Title'
+	    ]);
+
+	    $response->assertSessionHasErrors('content');
+    }
+
+    public function test_a_single_blog_post_can_be_viewed() {
+        $post = \App\Models\Post::factory()->create([
+            'title' => 'Sample Blog Post',
+	    'content' => 'This is the content of the sample blog post.',
+	]);
+	$response = $this->get('/posts/' . $post->id);
+	$response->assertStatus(200);
+	$response->assertSee($post->title);
+	$response->assertSee($post->content);
+    }
 }

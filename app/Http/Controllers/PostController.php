@@ -13,6 +13,12 @@ class PostController extends Controller
 	return view('posts.index', compact('posts'));
     }
 
+    public function show($id) {
+        $post = \App\Models\Post::findOrFail($id);
+
+	return view('posts.show', compact('post'));
+    }
+
     public function store(Request $request) {
 	$validated = $request->validate([
 	    'title' => 'required|string|max:255',
